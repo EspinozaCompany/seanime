@@ -1,0 +1,37 @@
+services:
+  seanime:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: seanime:latest
+    container_name: seanime
+    restart: unless-stopped
+    networks:
+      - dokploy-network
+    volumes:
+      - seanime-data:/data
+      # Mount a media library (read-only). Adjust the host path to your server:
+      # - /srv/media/anime:/anime:ro
+    environment:
+      - SEANIME_DATA_DIR=/data
+      - SEANIME_SERVER_HOST=0.0.0.0
+      - SEANIME_SERVER_PORT=43211
+      - TZ=America/Lima
+      # Detrás del reverse proxy (Dokploy/Traefik): password de servidor para el
+      # acceso remoto y URL pública para cookies de sesión seguras. El valor del
+      # password se define en el panel de Environment de Dokploy (no en git).
+      - SEANIME_SERVER_PASSWORD=${SEANIME_SERVER_PASSWORD}
+      - SEANIME_SERVER_EXTERNAL_URL=https://seanime.atioperu.com
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.seanime.rule=Host(`seanime.atioperu.com`)
+      - traefik.http.routers.seanime.entrypoints=websecure
+      - traefik.http.routers.seanime.tls.certresolver=letsencrypt
+      - traefik.http.services.seanime.loadbalancer.server.port=43211
+
+volumes:
+  seanime-data:
+
+networks:
+  dokploy-network:
+    external: true

@@ -9,6 +9,7 @@ import (
 	"seanime/internal/constants"
 	"seanime/internal/util"
 	"strconv"
+	"strings"
 
 	"github.com/rs/zerolog"
 	"github.com/spf13/viper"
@@ -199,6 +200,20 @@ func NewConfig(options *ConfigOptions, logger *zerolog.Logger) (*Config, error) 
 	if flags.DisablePassword {
 		viper.Set("server.password", "")
 		logger.Info().Msg("app: Disabled server password")
+	}
+
+	// Server password from environment (flags take precedence). Lets hosted/container
+	// deployments set the password via env without baking it into the config file.
+	if v := strings.TrimSpace(os.Getenv("SEANIME_SERVER_PASSWORD")); v != "" && flags.Password == "" && !flags.DisablePassword {
+		viper.Set("server.password", v)
+		logger.Info().Msg("app: Set server password from environment")
+	}
+
+	// Canonical public URL for proxy-aware secure cookies behind a reverse proxy.
+	// Has no CLI flag, so env is the only way to drive it from a container/compose.
+	if v := strings.TrimSpace(os.Getenv("SEANIME_SERVER_EXTERNAL_URL")); v != "" {
+		viper.Set("server.externalURL", v)
+		logger.Info().Str("externalURL", v).Msg("app: Set external URL from environment")
 	}
 
 	// Write config if host or port changed

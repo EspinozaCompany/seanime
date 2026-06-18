@@ -1,0 +1,40 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  cmd = "go build -trimpath -o ./tmp/seanime ."
+  bin = "./tmp/seanime"
+  args_bin = ["--datadir=/dev-data"]
+  include_ext = ["go"]
+  exclude_dir = [
+    "tmp",
+    "seanime-web",
+    "web",
+    "web-denshi",
+    "seanime-denshi",
+    "node_modules",
+    ".git",
+    ".dev-data",
+    "data",
+    "test",
+    "testdata",
+    "docs",
+    "codegen/generated",
+    "internal/extension_repo",
+  ]
+  delay = 800
+  stop_on_error = false
+  send_interrupt = true
+  kill_delay = "2s"
+
+[log]
+  time = true
+
+[color]
+  main = "magenta"
+  watcher = "cyan"
+  build = "yellow"
+  runner = "green"
+
+[misc]
+  clean_on_exit = true

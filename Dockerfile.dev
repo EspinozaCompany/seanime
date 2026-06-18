@@ -1,0 +1,21 @@
+# syntax=docker/dockerfile:1.7
+# Dev image with hot reload via `air`. Source is mounted at runtime.
+FROM golang:1.26.2-alpine
+
+RUN apk add --no-cache git ffmpeg ca-certificates wget \
+    && go install github.com/air-verse/air@latest
+
+WORKDIR /src
+
+ENV CGO_ENABLED=0 \
+    SEANIME_SERVER_HOST=0.0.0.0 \
+    SEANIME_SERVER_PORT=43000 \
+    SEANIME_DATA_DIR=/dev-data
+
+EXPOSE 43000
+
+COPY scripts/dev-entrypoint.sh /usr/local/bin/dev-entrypoint
+RUN chmod +x /usr/local/bin/dev-entrypoint
+
+ENTRYPOINT ["/usr/local/bin/dev-entrypoint"]
+CMD ["air"]
