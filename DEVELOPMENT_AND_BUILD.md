@@ -21,7 +21,7 @@
 
 ## Prerequisites
 
-- Go 1.23+
+- Go 1.27.1+ (see `go.mod`)
 - Node.js 18+ and npm
 
 ## Build Process
@@ -91,6 +91,34 @@ For development, you should be familiar with both Go and React.
    - Re-run the server with the updated configuration.
 
    The server will be available at `http://127.0.0.1:43000`.
+
+#### Server Development with Docker
+
+To start both the Docker backend and the local frontend, first install the
+frontend dependencies with `npm ci` inside `seanime-web`, then run from the
+repository root:
+
+```bash
+make dev
+```
+
+This rebuilds the backend image and starts the frontend at
+`http://127.0.0.1:43210`. Press `Ctrl+C` to stop both. The command does not
+install dependencies or update the lockfile. Node.js and npm must be available
+in your terminal; when using proto, put its shims first in `PATH`.
+
+From the repository root, build and start the backend with hot reload:
+
+```bash
+docker compose -f docker-compose.dev.yml up --build
+```
+
+The backend is available at `http://127.0.0.1:43000`, with development data
+persisted in `.dev-data`. Run the web interface separately as described below.
+
+After rebasing or changing `Dockerfile.dev`, use `--build` again to rebuild the
+image; `docker compose up` alone can reuse an outdated image. Keep the Go base
+images in `Dockerfile.dev` and `Dockerfile` aligned with the version in `go.mod`.
 
 #### Web Interface Development
 

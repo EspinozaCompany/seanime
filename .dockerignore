@@ -1,0 +1,47 @@
+# VCS
+.git
+.gitignore
+.gitattributes
+
+# Build outputs regenerated inside the Docker build
+/web
+/web-denshi
+seanime-web/out
+seanime-web/out-denshi
+seanime-web/node_modules
+seanime-web/dist
+node_modules
+
+# Local binaries
+seanime
+seanime-server-*
+*.exe
+
+# Local data / config
+/data
+/.config
+*.db
+*.db-journal
+*.log
+
+# Electron variant — not used in server Docker
+seanime-denshi
+
+# Editors
+.vscode
+.idea
+*.swp
+
+# Tests / coverage
+coverage
+*.test
+*.out
+
+# Misc
+.DS_Store
+.env
+.env.local
+docs
+test
+CHANGELOG.md
+README.md
